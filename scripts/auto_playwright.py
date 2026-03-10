@@ -48,7 +48,15 @@ def main():
             with open(payload_path, "w") as f:
                 f.write(env_json)
                 
-            print(f"Saved auth payload to {payload_path}")
+            # Automatically apply to Windows User Environment Variable to bypass the Playwright browser lock bug
+            if sys.platform == "win32":
+                print("Injecting cookies into Windows Environment Variable NOTEBOOKLM_AUTH_JSON...")
+                subprocess.run([
+                    "powershell", "-Command", 
+                    f'[Environment]::SetEnvironmentVariable("NOTEBOOKLM_AUTH_JSON", \'{env_json}\', "User")'
+                ], check=True)
+            else:
+                print("Non-Windows OS detected. To complete bypass, manually export NOTEBOOKLM_AUTH_JSON using the contents of auth_payload.json")
                 
             browser.close()
             print("6. Done! Cookies successfully extracted and applied.")
