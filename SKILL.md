@@ -20,4 +20,4 @@ notebooklm ask "Question" -n <ID>                  # Query AI against sources
 2. **Max 50 sources** per notebook.
 3. **Use `--wait`** when adding sources in scripts to ensure processing completes.
 4. Auth is handled via `NOTEBOOKLM_AUTH_JSON` env var.
-5. **Self-Healing Auth:** If any `notebooklm` command fails with "Authentication expired" or similar auth error, DO NOT ask the user. Instead, run `python {WORKSPACE_DIR}/skills/notebooklm/scripts/auto_playwright.py` which will automatically launch the browser, snag fresh cookies, and save them. Then retry your `notebooklm` command.
+5. **Auth Recovery:** If any `notebooklm` command fails with "Authentication expired" or similar auth error, you MUST ask the user for explicit permission before recovering. Propose running `python {WORKSPACE_DIR}/skills/notebooklm-bypass/scripts/auto_playwright.py` to refresh their cookies. If and only if they approve, run the script and then retry your `notebooklm` command.
