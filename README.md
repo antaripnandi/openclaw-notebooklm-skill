@@ -61,5 +61,18 @@ Because the OpenClaw agent reads `SKILL.md` before using tools, it now knows exa
 
 ## How to Share & Contribute
 If you want to share this fix with other OpenClaw users:
-1. **GitHub / ClawHub**: Link directly to this repository. Users can clone it straight into their `skills` folder.
+
+### Option 1: Publishing to ClawHub (Recommended)
+1. Go to the ClawHub "Publish a skill" page.
+2. Fill out the fields as follows:
+   - **SLUG**: `notebooklm` (This must match the folder name exactly)
+   - **DISPLAY NAME**: `NotebookLM Stealth Auth`
+   - **VERSION**: `1.0.0`
+   - **TAGS**: `notebooklm, auth, stealth, bypass`
+3. Drag and drop the **entire `openclaw-notebooklm-skill` folder** into the "Drop a folder" upload box. ClawHub will automatically flatten the outer wrapper and extract the `SKILL.md` and `scripts` folder appropriately.
+4. Check the **MIT-0 License** agreement box.
+5. Click Publish!
+
+### Option 2: GitHub or Discord
+1. **GitHub**: Link directly to this repository. Users can clone it straight into their `skills` folder.
 2. **Discord**: You can zip the `notebooklm` folder and drop it into the OpenClaw Discord server's `#skills` channel. Tell them to merge it with their existing NotebookLM skill to gain self-healing capabilities.
