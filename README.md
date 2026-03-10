@@ -2,9 +2,12 @@
 
 This is a custom drop-in skill for the [OpenClaw Framework](https://github.com/openclaw/openclaw) that permanently solves the "Authentication expired" login loop encountered when using the NotebookLM CLI.
 
-Google frequently rotates session cookies for security. Normally, this breaks headless AI agents and requires constant manual terminal intervention (`notebooklm login`).
+## Background: The Multi-Day Auth Loop Nightmare
+For days, OpenClaw users have faced a critical bug: Google frequently rotates session cookies for security. When these cookies expire, the `notebooklm` CLI tool crashes with an `Authentication expired` error. 
 
-This skill fixes that by **giving your OpenClaw agent the ability to self-heal its own authentication.**
+Normally, this breaks headless AI agents completely. The agent fails its task, drops what it's doing, and the human user is forced to intervene, open their terminal, manually run `notebooklm login`, wait for the browser, and press Enter. If you tried to bypass it using the `NOTEBOOKLM_AUTH_JSON` environment variable, the Playwright CLI tool would often drop the cookies due to a `SameSite: Lax` cross-origin security bug.
+
+This skill fixes all of that by **giving your OpenClaw agent the ability to self-heal its own authentication.**
 
 ---
 
@@ -53,3 +56,10 @@ If you look inside the `SKILL.md` file provided in this folder, you will see a s
 > **5. Self-Healing Auth**: If any `notebooklm` command fails with "Authentication expired", DO NOT ask the user. Instead, run `python {WORKSPACE_DIR}\skills\notebooklm\scripts\auto_playwright.py` which will automatically launch the browser, snag fresh cookies, and save them. Then retry your `notebooklm` command.
 
 Because the OpenClaw agent reads `SKILL.md` before using tools, it now knows exactly how to identify a cookie expiration crash, run the Python script to steal fresh cookies, and confidently retry the task without interrupting you!
+
+---
+
+## How to Share & Contribute
+If you want to share this fix with other OpenClaw users:
+1. **GitHub / ClawHub**: Link directly to this repository. Users can clone it straight into their `skills` folder.
+2. **Discord**: You can zip the `notebooklm` folder and drop it into the OpenClaw Discord server's `#skills` channel. Tell them to merge it with their existing NotebookLM skill to gain self-healing capabilities.
