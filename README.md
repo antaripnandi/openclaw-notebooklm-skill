@@ -14,18 +14,12 @@ This skill fixes all of that by **giving your OpenClaw agent the ability to self
 ## Features
 - **One-Click Consent Recovery**: When OpenClaw gets an auth error, it asks your permission before running the included script to fetch fresh cookies, ensuring no silent credential harvesting occurs.
 - **Native Playwright Integration**: The script opens a visible browser window for 5 seconds to naturally bypass Google's "unsecure browser" bot detection.
-- **Auto-Injection (Windows OS)**: It automatically injects the fresh cookies back into the `NOTEBOOKLM_AUTH_JSON` environment variable, bypassing the Playwright `SameSite: Lax` CLI bug completely natively.
+- **Dynamic Session Injection**: The script strictly saves the cookies to your local `~/.notebooklm` directory. OpenClaw then reads this file and injects the auth tokens dynamically "on-the-fly" for each command, preventing permanent, risky changes to your Windows Environment Variables.
 
 ---
 
 ## The A-Z Setup Guide
 
-### Step 1: Clean Your Environment (If Applicable)
-If you previously tried to hardcode the `NOTEBOOKLM_AUTH_JSON` environment variable and it expired, you must delete it first, or the login command will fail.
-1. Open Windows Start Menu -> Search "Environment Variables" -> "Edit the system environment variables".
-2. Click **Environment Variables...** at the bottom.
-3. In the **top window (User variables)**, find `NOTEBOOKLM_AUTH_JSON`, click it, and hit **Delete**.
-4. Click OK.
 
 ### Step 2: The One-Time Interactive Login
 You must establish a persistent Chrome profile that is logged into your Google Account.
@@ -53,7 +47,8 @@ You must establish a persistent Chrome profile that is logged into your Google A
 
 If you look inside the `SKILL.md` file provided in this folder, you will see a specific instruction rule given to the AI:
 
-> **5. Auth Recovery**: If any `notebooklm` command fails with "Authentication expired" or similar auth error, you MUST ask the user for explicit permission before recovering. Propose running `python {WORKSPACE_DIR}\skills\notebooklm-bypass\scripts\auto_playwright.py` to refresh their cookies. If and only if they approve, run the script and then retry your `notebooklm` command.
+> **4. Dynamic Auth Execution**: For every command, read the contents of `~/.notebooklm/auth_payload.json` and inject it dynamically into your execution environment.
+> **5. Auth Recovery**: If `notebooklm` fails with "Authentication expired", you MUST ask the user for permission. Propose running `python {WORKSPACE_DIR}\skills\notebooklm-bypass\scripts\auto_playwright.py`. If approved, run it. This script steals fresh cookies and saves them to `~/.notebooklm/auth_payload.json`. Once saved, read the new file and retry your command using the Dynamic Auth Execution rule.
 
 Because the OpenClaw agent reads `SKILL.md` before using tools, it now knows exactly how to identify a cookie expiration crash, propose the Python script solution to you, wait for your go-ahead, and confidently retry the task without manually touching the browser!
 

@@ -19,5 +19,5 @@ notebooklm ask "Question" -n <ID>                  # Query AI against sources
 1. **No playlists.** Extract individual YouTube URLs and add one by one.
 2. **Max 50 sources** per notebook.
 3. **Use `--wait`** when adding sources in scripts to ensure processing completes.
-4. Auth is handled via `NOTEBOOKLM_AUTH_JSON` env var.
-5. **Auth Recovery:** If any `notebooklm` command fails with "Authentication expired" or similar auth error, you MUST ask the user for explicit permission before recovering. Propose running `python {WORKSPACE_DIR}/skills/notebooklm-bypass/scripts/auto_playwright.py` to refresh their cookies. If and only if they approve, run the script and then retry your `notebooklm` command.
+4. **Dynamic Auth Execution:** The `notebooklm` CLI requires a `NOTEBOOKLM_AUTH_JSON` environment variable to run. **YOU MUST NOT SET THIS PERMANENTLY.** Instead, for every command, read the contents of `~/.notebooklm/auth_payload.json` and inject it dynamically into your execution environment. (e.g., `cross-env NOTEBOOKLM_AUTH_JSON='{...}' notebooklm list` or set it locally in your Node script prior to exec).
+5. **Auth Recovery:** If `notebooklm` fails with "Authentication expired", you MUST ask the user for permission. Propose running `python {WORKSPACE_DIR}/skills/notebooklm-bypass/scripts/auto_playwright.py`. If approved, run it. This script steals fresh cookies and saves them to `~/.notebooklm/auth_payload.json`. Once saved, read the new file and retry your command using the Dynamic Auth Execution rule.
